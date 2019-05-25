@@ -1,0 +1,167 @@
+---
+title: "R3 Final Project"
+author: "Monika Lind, Alexis Adams-Clark, Katherine Hagan"
+date: "5/25/2019"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r library}
+library(tidyverse)
+library(rio)
+library(here)
+```
+
+```{r import}
+d1 <- rio::import(here::here("Lind_GS_F17.csv"), setclass = "tbl_df") %>% 
+  characterize()
+
+names(d1) <- str_replace_all(names(d1), c("[.]" = "_", "Q" = "q"))
+
+d2 <- rio::import(here::here("Lind_GS_F18.csv"), setclass = "tbl_df") %>% 
+  characterize()
+
+names(d2) <- str_replace_all(names(d2), c("[.]" = "_", "Q" = "q"))
+```
+
+```{r tidy}
+d1_raw <- d1 %>%
+  mutate(pid = row_number(),
+         group = 1) %>% 
+  select(115:116, 3:4, 7:114) %>% 
+  rename(date = RecordedDate,
+         duration = Duration__in_seconds_,
+         race_ethn = q1_3,
+         gender = q346,
+         gender_text = q346_4_TEXT,
+         age = q348) %>% 
+  mutate(age = (age + 15)) %>% 
+  select(-7)
+
+d2_raw <- d2 %>%
+  mutate(pid = (row_number() + 437),
+         group = 2) %>% 
+  select(119, 120, everything()) %>% 
+  rename(date = RecordedDate,
+         duration = Duration__in_seconds_,
+         race_ethn = q6,
+         gender = q62,
+         gender_text = q62_4_TEXT,
+         age = q63) %>% 
+  select(1:4, 7:8, 10:120) %>% 
+  mutate(age = (age + 15)) %>% 
+  #remove participant who did not complete any Q items
+  filter(pid != 439)
+```
+
+```{r tsc}
+#group 1
+
+tsc1_long <- d1_raw %>% 
+  select(1:7, 72:111) %>% 
+  mutate(q372_1 = (q372_1 - 1),
+         q372_2 = (q372_2 - 1),
+         q372_3 = (q372_3 - 1),
+         q372_4 = (q372_4 - 1),
+         q372_5 = (q372_5 - 1),
+         q372_6 = (q372_6 - 1),
+         q372_7 = (q372_7 - 1),
+         q372_8 = (q372_8 - 1),
+         q372_9 = (q372_9 - 1),
+         q372_10 = (q372_10 - 1),
+         q372_11 = (q372_11 - 1),
+         q372_12 = (q372_12 - 1),
+         q372_13 = (q372_13 - 1),
+         q372_14 = (q372_14 - 1),
+         q372_15 = (q372_15 - 1),
+         q372_16 = (q372_16 - 1),
+         q372_17 = (q372_17 - 1),
+         q372_18 = (q372_18 - 1),
+         q372_19 = (q372_19 - 1),
+         q372_20 = (q372_20 - 1),
+         q372_21 = (q372_21 - 1),
+         q372_22 = (q372_22 - 1),
+         q372_23 = (q372_23 - 1),
+         q372_24 = (q372_24 - 1),
+         q372_25 = (q372_25 - 1),
+         q372_26 = (q372_26 - 1),
+         q372_27 = (q372_27 - 1),
+         q372_28 = (q372_28 - 1),
+         q372_29 = (q372_29 - 1),
+         q372_30 = (q372_30 - 1),
+         q372_31 = (q372_31 - 1),
+         q372_32 = (q372_32 - 1),
+         q372_33 = (q372_33 - 1),
+         q372_34 = (q372_34 - 1),
+         q372_35 = (q372_35 - 1),
+         q372_36 = (q372_36 - 1),
+         q372_37 = (q372_37 - 1),
+         q372_38 = (q372_38 - 1),
+         q372_39 = (q372_39 - 1),
+         q372_40 = (q372_40 - 1)) %>% 
+  gather(item, response, -1:-7) %>% 
+  separate(item, c(NA, "item"), sep = "_") %>% 
+  mutate(scale = "tsc") %>% 
+  select(1:7, 10, 8:9)
+
+#group 2
+
+tsc2_long <- d2_raw %>% 
+  select(1:7, 72:111) %>% 
+  mutate(q75_1 = (q75_1 - 1),
+         q75_2 = (q75_2 - 1),
+         q75_3 = (q75_3 - 1),
+         q75_4 = (q75_4 - 1),
+         q75_5 = (q75_5 - 1),
+         q75_6 = (q75_6 - 1),
+         q75_7 = (q75_7 - 1),
+         q75_8 = (q75_8 - 1),
+         q75_9 = (q75_9 - 1),
+         q75_10 = (q75_10 - 1),
+         q75_11 = (q75_11 - 1),
+         q75_12 = (q75_12 - 1),
+         q75_13 = (q75_13 - 1),
+         q75_14 = (q75_14 - 1),
+         q75_15 = (q75_15 - 1),
+         q75_16 = (q75_16 - 1),
+         q75_17 = (q75_17 - 1),
+         q75_18 = (q75_18 - 1),
+         q75_19 = (q75_19 - 1),
+         q75_20 = (q75_20 - 1),
+         q75_21 = (q75_21 - 1),
+         q75_22 = (q75_22 - 1),
+         q75_23 = (q75_23 - 1),
+         q75_24 = (q75_24 - 1),
+         q75_25 = (q75_25 - 1),
+         q75_26 = (q75_26 - 1),
+         q75_27 = (q75_27 - 1),
+         q75_28 = (q75_28 - 1),
+         q75_29 = (q75_29 - 1),
+         q75_30 = (q75_30 - 1),
+         q75_31 = (q75_31 - 1),
+         q75_32 = (q75_32 - 1),
+         q75_33 = (q75_33 - 1),
+         q75_34 = (q75_34 - 1),
+         q75_35 = (q75_35 - 1),
+         q75_36 = (q75_36 - 1),
+         q75_37 = (q75_37 - 1),
+         q75_38 = (q75_38 - 1),
+         q75_39 = (q75_39 - 1),
+         q75_40 = (q75_40 - 1)) %>% 
+  gather(item, response, -1:-7) %>% 
+  separate(item, c(NA, "item"), sep = "_") %>% 
+  mutate(scale = "tsc") %>% 
+  select(1:7, 10, 8:9)
+
+tsc_long <- bind_rows(tsc1_long, tsc2_long)
+#write_csv(tsc_long, path = "/Users/monikalind/Documents/UO/sap/tsc_long.csv")
+
+tsc_pid <- tsc_long %>% 
+  mutate(group = as.factor(group),
+         gender = as.factor(gender)) %>% 
+  group_by(pid, group, gender) %>% 
+  summarise(tsc_sum = sum(response, na.rm = TRUE))
+```
