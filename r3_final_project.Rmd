@@ -221,3 +221,15 @@ tsc_pid <- tsc_long %>%
   group_by(pid, group, gender) %>% 
   summarise(tsc_sum = sum(response, na.rm = TRUE))
 ```
+
+```{r walk}
+tsc_split <- split(tsc_pid, tsc_pid$gender)
+
+plots <- tsc_split %>% 
+  map(~ ggplot(., aes(x = tsc_sum)) + 
+        geom_histogram())
+
+paths <- paste0("gender", names(plots), ".png")
+
+walk2(paths, plots, ggsave)
+```
