@@ -173,7 +173,7 @@ get_tsc_items <- function(df) {
 
 #subtract 1 function
 subtract1 <- function(df) {
-  map(df, ~(.x-1), na.rm = TRUE)
+  map(df, ~(.x-1), na.rm = TRUE) #might want to explain map before you use it in this tutorial, instead of in the following section
 }
 
 ```
@@ -249,9 +249,10 @@ d1_raw %>%
   mutate(n = map_dbl(data, nrow))
 
 #We could look at the average age in each level of this factor:
-map_dbl(by_gender$data, ~mean(.x$age))
+map_dbl(by_gender$data, ~mean(.x$age, na.rm = TRUE))
 
 #Or other descriptives:
 map_dbl(by_gender$data, ~min(.x$q65_1), na.rm = TRUE)
 map_dbl(by_gender$data, ~max(.x$q65_1), na.rm = TRUE) #Note from KH: I need to figure out why min and max is yielding "NA" for gender category 2.
+#ST: I did not get an NA as mentioned by KH, but for the max and min, both resulted in infinity (positive and negative).
 ```
